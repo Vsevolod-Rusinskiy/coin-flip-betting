@@ -1,0 +1,46 @@
+📦src
+ ┣ 📂1_app
+ ┃ ┣ 📂providers
+ ┃ ┃ ┣ 📂web3
+ ┃ ┃ ┃ ┣ 📂model
+ ┃ ┃ ┃ ┃ ┗ 📜types.ts
+ ┃ ┃ ┃ ┣ 📂ui
+ ┃ ┃ ┃ ┃ ┗ 📜web3-provider.tsx
+ ┃ ┃ ┃ ┗ 📜index.ts
+ ┃ ┃ ┣ 📜index.ts
+ ┃ ┃ ┗ 📜root-provider.tsx
+ ┃ ┣ 📂styles
+ ┃ ┗ 📂types
+ ┣ 📂2_pages
+ ┃ ┗ 📂home
+ ┃ ┃ ┣ 📂model
+ ┃ ┃ ┃ ┗ 📜types.ts
+ ┃ ┃ ┣ 📂ui
+ ┃ ┃ ┃ ┣ 📜home.tsx
+ ┃ ┃ ┃ ┗ 📜styles.css
+ ┃ ┃ ┗ 📜index.ts
+ ┣ 📂3_widgets
+ ┃ ┣ 📂bet-form
+ ┃ ┣ 📂game-history
+ ┃ ┗ 📂header
+ ┣ 📂4_features
+ ┃ ┣ 📂connect-wallet
+ ┃ ┃ ┣ 📂model
+ ┃ ┃ ┣ 📂ui
+ ┃ ┃ ┃ ┗ 📜connect-button.tsx
+ ┃ ┃ ┗ 📜index.ts
+ ┃ ┣ 📂flip-coin
+ ┃ ┗ 📂make-bet
+ ┣ 📂5_entities
+ ┃ ┣ 📂bet
+ ┃ ┣ 📂coin
+ ┃ ┗ 📂wallet
+ ┣ 📂6_shared
+ ┃ ┣ 📂api
+ ┃ ┣ 📂lib
+ ┃ ┗ 📂ui
+ ┗ 📂app
+ ┃ ┣ 📜favicon.ico
+ ┃ ┣ 📜globals.css
+ ┃ ┣ 📜layout.tsx
+ ┃ ┗ 📜page.tsx
