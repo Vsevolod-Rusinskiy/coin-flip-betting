@@ -41,10 +41,9 @@ function ContextProvider({
   children: ReactNode;
   cookies: string | null;
 }) {
-  const initialState = cookieToInitialState(
-    wagmiAdapter.wagmiConfig as Config,
-    cookies
-  );
+  const initialState = cookies
+    ? cookieToInitialState(wagmiAdapter.wagmiConfig as Config, cookies)
+    : undefined;
 
   return (
     <WagmiProvider
