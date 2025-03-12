@@ -1,1 +1,0 @@
-export type { Web3ProviderProps } from './model/types' 
