@@ -21,8 +21,8 @@ export const WalletInfo: FC = () => {
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-      <h2 className="text-xl font-semibold mb-4">Информация о кошельке</h2>
+    <div className="bg-white p-6 rounded-lg shadow-md mb-6 text-gray-800">
+      <h2 className="text-xl font-semibold mb-4 ">Информация о кошельке</h2>
       <div className="space-y-2">
         <div>
           <span className="font-medium">Адрес: </span>
