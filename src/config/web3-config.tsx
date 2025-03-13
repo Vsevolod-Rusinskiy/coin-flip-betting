@@ -12,7 +12,7 @@ if (!projectId) {
 // Используем только Moonbase Alpha
 export const networks = [moonbaseAlpha];
 
-// Настройка Wagmi Adapter
+// Настройка Wagmi Adapter для работы с AppKit
 export const wagmiAdapter = new WagmiAdapter({
   storage: createStorage({
     storage: cookieStorage,
@@ -22,4 +22,5 @@ export const wagmiAdapter = new WagmiAdapter({
   networks,
 });
 
-export const config = wagmiAdapter.wagmiConfig;
+// Конфигурация для Wagmi
+export const wagmiConfig = wagmiAdapter.wagmiConfig;

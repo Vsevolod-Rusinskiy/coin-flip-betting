@@ -4,7 +4,7 @@ import { type FC } from "react";
 import { useWalletStatus } from "../model/use-wallet-status";
 import { useSwitchChain } from "wagmi";
 import { moonbaseAlpha } from "viem/chains";
-import { modal } from "@/context";
+import { walletModal } from "@/context/web3-provider";
 
 export const NetworkWarning: FC = () => {
   const { isConnected, isCorrectNetwork, networkName, expectedNetworkName } =
@@ -24,7 +24,7 @@ export const NetworkWarning: FC = () => {
 
       // Если не получилось, открываем модальное окно сетей
       try {
-        await modal.open({ view: "Networks" });
+        await walletModal.open({ view: "Networks" });
       } catch (modalError) {
         console.error(
           "❌ Ошибка при открытии модального окна сетей:",

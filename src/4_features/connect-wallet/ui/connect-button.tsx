@@ -2,7 +2,7 @@
 
 import { type FC, useState, useEffect } from "react";
 import { useAccount, useBalance } from "wagmi";
-import { modal } from "@/context";
+import { walletModal } from "@/context/web3-provider";
 
 export const ConnectButton: FC = () => {
   console.log("🔍 Рендер ConnectButton");
@@ -36,7 +36,7 @@ export const ConnectButton: FC = () => {
     setIsLoading(true);
     try {
       console.log("🔍 Попытка открыть AppKit Modal");
-      await modal.open();
+      await walletModal.open();
       console.log("✅ AppKit Modal успешно открыт");
     } catch (error) {
       console.error("❌ Ошибка при подключении кошелька:", error);
@@ -54,7 +54,7 @@ export const ConnectButton: FC = () => {
     console.log("👆 Нажата кнопка смены сети");
     try {
       console.log("🔍 Попытка открыть модальное окно сетей");
-      await modal.open({ view: "Networks" });
+      await walletModal.open({ view: "Networks" });
       console.log("✅ Модальное окно сетей успешно открыто");
     } catch (error) {
       console.error("❌ Ошибка при открытии модального окна сетей:", error);

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-import ContextProvider from "@/context";
+import Web3Provider from "@/context/web3-provider";
 
 export const metadata: Metadata = {
   title: "Coin Flip Betting",
@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ContextProvider cookies={null}>{children}</ContextProvider>
+        <Web3Provider cookies={null}>{children}</Web3Provider>
       </body>
     </html>
   );
