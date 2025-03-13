@@ -4,6 +4,7 @@ import { type FC } from "react";
 import { useWalletStatus } from "../model/use-wallet-status";
 import { useSwitchChain } from "wagmi";
 import { moonbaseAlpha } from "viem/chains";
+import { modal } from "@/context";
 
 export const NetworkWarning: FC = () => {
   const { isConnected, isCorrectNetwork, networkName, expectedNetworkName } =
@@ -13,6 +14,25 @@ export const NetworkWarning: FC = () => {
   if (!isConnected || isCorrectNetwork) {
     return null;
   }
+
+  const handleSwitchNetwork = async () => {
+    try {
+      // Сначала пробуем использовать wagmi switchChain
+      await switchChain({ chainId: moonbaseAlpha.id });
+    } catch (error) {
+      console.error("❌ Ошибка при переключении сети через wagmi:", error);
+
+      // Если не получилось, открываем модальное окно сетей
+      try {
+        await modal.open({ view: "Networks" });
+      } catch (modalError) {
+        console.error(
+          "❌ Ошибка при открытии модального окна сетей:",
+          modalError
+        );
+      }
+    }
+  };
 
   return (
     <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 rounded">
@@ -40,7 +60,7 @@ export const NetworkWarning: FC = () => {
             {expectedNetworkName}.
           </p>
           <button
-            onClick={() => switchChain({ chainId: moonbaseAlpha.id })}
+            onClick={handleSwitchNetwork}
             className="mt-2 px-4 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
           >
             Переключить сеть
