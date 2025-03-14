@@ -4,7 +4,7 @@ import { type FC } from "react";
 import { useWalletStatus } from "../model/use-wallet-status";
 import { useSwitchChain } from "wagmi";
 import { moonbaseAlpha } from "viem/chains";
-import { walletModal } from "@/context/web3-provider";
+import { walletModal } from "@/app/context/web3-provider";
 
 export const NetworkWarning: FC = () => {
   const { isConnected, isCorrectNetwork, networkName, expectedNetworkName } =

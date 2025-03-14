@@ -2,7 +2,7 @@
 
 import { type FC, useState, useEffect } from "react";
 import { useAccount, useBalance } from "wagmi";
-import { walletModal } from "@/context/web3-provider";
+import { walletModal } from "@/app/context/web3-provider";
 
 export const ConnectButton: FC = () => {
   console.log("🔍 Рендер ConnectButton");
