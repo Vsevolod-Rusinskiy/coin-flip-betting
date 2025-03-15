@@ -6,10 +6,14 @@ import { moonbaseAlpha } from "viem/chains";
 
 export const WalletInfo: FC = () => {
   const { address, isConnected } = useAccount();
-  const { data: balance } = useBalance({
+  const { data: balance, refetch } = useBalance({
     address,
   });
   const chainId = useChainId();
+
+  const handleRefreshBalance = async () => {
+    await refetch();
+  };
 
   const isCorrectNetwork = chainId === moonbaseAlpha.id;
   const networkName = isCorrectNetwork
@@ -29,11 +33,18 @@ export const WalletInfo: FC = () => {
           <span className="font-mono text-sm break-all">{address}</span>
         </div>
         {balance && (
-          <div>
+          <div className="flex items-center gap-2">
             <span className="font-medium">Баланс: </span>
             <span>
               {parseFloat(balance.formatted).toFixed(4)} {balance.symbol}
             </span>
+            <button
+              onClick={handleRefreshBalance}
+              className="p-1 hover:bg-gray-100 rounded-full ml-10px"
+              title="Обновить баланс"
+            >
+              🔄
+            </button>
           </div>
         )}
         <div>

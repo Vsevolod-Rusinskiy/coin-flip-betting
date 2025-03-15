@@ -42,7 +42,6 @@ export const HomePage: FC<HomePageProps> = () => {
 
       // Размещаем ставку в контракте
       const tx = await contract.placeBet(choice, { value: betAmount });
-      console.log("Транзакция отправлена:", tx.hash);
       await tx.wait();
       console.log("Ставка размещена");
 
@@ -52,7 +51,6 @@ export const HomePage: FC<HomePageProps> = () => {
 
       // Разрешаем ставку в контракте
       const resolveTx = await contract.resolveBet(result);
-      console.log("Транзакция разрешения отправлена:", resolveTx.hash);
       await resolveTx.wait();
       console.log("Ставка разрешена");
 
