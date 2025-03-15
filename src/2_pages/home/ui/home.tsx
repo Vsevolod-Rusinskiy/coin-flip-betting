@@ -26,9 +26,10 @@ export const HomePage: FC<HomePageProps> = () => {
       const choice = await getCoinFlipResult();
       console.log("Первый бросок (choice):", choice ? "Орёл" : "Решка");
 
-      // Создаем экземпляр контракта
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
+      // Используем wagmi для работы с контрактом
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+      const web3Provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await web3Provider.getSigner();
       const contract = new ethers.Contract(
         CONTRACT_ADDRESS,
         CONTRACT_ABI,
@@ -36,7 +37,7 @@ export const HomePage: FC<HomePageProps> = () => {
       );
 
       // Конвертируем amount в wei
-      const betAmount = ethers.utils.parseEther(amount);
+      const betAmount = ethers.parseEther(amount);
       console.log("Размещаем ставку:", betAmount.toString(), "wei");
 
       // Размещаем ставку в контракте
