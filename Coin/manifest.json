@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Coin Flip",
+  "version": "1.0",
+  "description": "Простое расширение для подбрасывания монетки",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": ["https://api-eus.qrypt.com/*"],
+  "externally_connectable": {
+    "matches": ["http://localhost:3000/*", "http://localhost/*"]
+  },
+  "icons": {
+    "32": "icons/coin32.png",
+    "48": "icons/coin48.png",
+    "128": "icons/coin128.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  }
+}
