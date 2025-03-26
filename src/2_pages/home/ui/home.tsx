@@ -72,7 +72,7 @@ export const HomePage: FC<HomePageProps> = () => {
 
       chrome.runtime.sendMessage(
         EXTENSION_ID,
-        { action: "flipCoin" },
+        { action: "flip" },
         (response) => {
           if (chrome.runtime.lastError) {
             reject(chrome.runtime.lastError);
@@ -84,6 +84,7 @@ export const HomePage: FC<HomePageProps> = () => {
           } else {
             reject("Не удалось получить результат от расширения");
           }
+
         }
       );
     });
@@ -148,3 +149,4 @@ export const HomePage: FC<HomePageProps> = () => {
     </main>
   );
 };
+

@@ -36,17 +36,22 @@ chrome.runtime.onMessageExternal.addListener(function (
   sender,
   sendResponse
 ) {
-  console.log("🎲 1. Получен запрос на подбрасывание:", request.flipNumber || "не указан номер броска");
+  console.log("🎲 1. Получен запрос на подбрасывание");
 
   if (request.action === "flip") {
-    fetchRandomByte()
-      .then((byte) => {
-        const result = byte % 2 === 0;
-        console.log(`🎲 2. Результат подбрасывания ${request.flipNumber}: ${result ? "Орёл" : "Решка"}`);
+    // Делаем два подбрасывания сразу
+    Promise.all([fetchRandomByte(), fetchRandomByte()])
+      .then(([byte1, byte2]) => {
+        const results = {
+          first: byte1 % 2 === 0,
+          second: byte2 % 2 === 0
+        };
+        console.log(`🎲 2. Результаты подбрасывания: 
+          1: ${results.first ? "Орёл" : "Решка"}
+          2: ${results.second ? "Орёл" : "Решка"}`);
         sendResponse({ 
           success: true, 
-          result: result,
-          flipNumber: request.flipNumber
+          results: results 
         });
       })
       .catch((error) => {

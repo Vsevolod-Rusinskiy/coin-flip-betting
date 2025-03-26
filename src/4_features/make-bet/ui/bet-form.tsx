@@ -10,7 +10,8 @@ const BetForm: React.FC<BetFormProps> = ({ onPlaceBet }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (parseFloat(amount) > 0) {
+    const betAmount = parseFloat(amount);
+    if (betAmount > 0 && betAmount <= 1) {
       setIsLoading(true);
       try {
         await onPlaceBet(amount);
@@ -32,10 +33,14 @@ const BetForm: React.FC<BetFormProps> = ({ onPlaceBet }) => {
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-          placeholder="Введите сумму"
+          placeholder="Рекомендуемая ставка: 0.01"
+          min="0.01"
+          max="1"
+          step="0.01"
           required
           disabled={isLoading}
         />
+        <p className="text-sm text-gray-500 mt-1">Максимальная ставка: 1 DEV</p>
       </div>
       <button
         type="submit"
