@@ -79,12 +79,11 @@ export const HomePage: FC<HomePageProps> = () => {
             return;
           }
 
-          if (response && response.result !== undefined) {
+          if (response && response.success) {
             resolve(response.result);
           } else {
             reject("Не удалось получить результат от расширения");
           }
-
         }
       );
     });
