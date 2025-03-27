@@ -25,8 +25,7 @@ export const HomePage: FC<HomePageProps> = () => {
   const handlePlaceBet = async (amount: string) => {
     try {
       const choice = await getCoinFlipResult();
-
-      // Используем wagmi для работы с контрактом
+      
       await window.ethereum.request({ method: "eth_requestAccounts" });
       const web3Provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await web3Provider.getSigner();
@@ -36,19 +35,14 @@ export const HomePage: FC<HomePageProps> = () => {
         signer
       );
 
-      // Конвертируем amount в wei
       const betAmount = ethers.parseEther(amount);
       console.log("Размещаем ставку:", betAmount.toString(), "wei");
 
-      // Размещаем ставку в контракте
       const tx = await contract.placeBet(choice, { value: betAmount });
       await tx.wait();
       console.log("Ставка размещена");
 
-      // Получаем второй результат
       const result = await getCoinFlipResult();
-
-      // Добавляем вызов resolveBet
       await contract.resolveBet(result);
 
       setBetResult({ choice, result });

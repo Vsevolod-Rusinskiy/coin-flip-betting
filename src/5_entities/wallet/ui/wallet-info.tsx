@@ -10,12 +10,12 @@ interface WalletInfoProps {
 
 export const WalletInfo: FC<WalletInfoProps> = ({ betResult }) => {
   const { address, isConnected } = useAccount();
-  const { data: balance, refetch } = useBalance({ address });
+  const { data: balance, refetch, isLoading } = useBalance({ address });
   const chainId = useChainId();
 
   console.log('balance:', balance)
 
-  const [balanceShow, setBalanceShow] = useState("0.0000");
+  const [balanceShow, setBalanceShow] = useState<string | null>(null);
 
   const updateBalance = async () => {
     await refetch();
@@ -24,13 +24,12 @@ export const WalletInfo: FC<WalletInfoProps> = ({ betResult }) => {
     }
   };
 
-  // const handleRefreshBalance = () => updateBalance();
-
   useEffect(() => {
-    if (betResult !== null || balance?.formatted) {
-      updateBalance();
+    if (balance?.formatted) {
+      setBalanceShow(parseFloat(balance.formatted).toFixed(4));
     }
-  }, [betResult, balance?.formatted]);
+  }, [balance?.formatted]);
+
 
   const networkStatus = {
     isCorrectNetwork: chainId === moonbaseAlpha.id,
@@ -46,13 +45,29 @@ export const WalletInfo: FC<WalletInfoProps> = ({ betResult }) => {
     </div>
   );
 
-  const BalanceSection = () => (
-    balance && (
+  const BalanceSection = () => {
+    if (isLoading || balanceShow === null) {
+      return (
+        <div className="flex items-center gap-2">
+          <span className="font-medium">Баланс: </span>
+          <span>Загрузка...</span>
+        </div>
+      );
+    }
+
+    return (
       <div className="flex items-center gap-2">
         <span className="font-medium">Баланс: </span>
         <span>
-          {balanceShow} {balance.symbol}
+          {balanceShow} {balance?.symbol}
         </span>
+        <button 
+          onClick={updateBalance}
+          className="text-xl hover:opacity-70 transition-opacity"
+          title="Обновить баланс"
+        >
+          🔄
+        </button>
         <a
           href="https://faucet.moonbeam.network/"
           target="_blank"
@@ -62,8 +77,8 @@ export const WalletInfo: FC<WalletInfoProps> = ({ betResult }) => {
           Получить тестовые токены
         </a>
       </div>
-    )
-  );
+    );
+  };
 
   const NetworkSection = () => (
     <div>
