@@ -13,6 +13,8 @@ export const WalletInfo: FC<WalletInfoProps> = ({ betResult }) => {
   const { data: balance, refetch } = useBalance({ address });
   const chainId = useChainId();
 
+  console.log('balance:', balance)
+
   const [balanceShow, setBalanceShow] = useState("0.0000");
 
   const updateBalance = async () => {
@@ -22,7 +24,7 @@ export const WalletInfo: FC<WalletInfoProps> = ({ betResult }) => {
     }
   };
 
-  const handleRefreshBalance = () => updateBalance();
+  // const handleRefreshBalance = () => updateBalance();
 
   useEffect(() => {
     if (betResult !== null || balance?.formatted) {
@@ -51,13 +53,14 @@ export const WalletInfo: FC<WalletInfoProps> = ({ betResult }) => {
         <span>
           {balanceShow} {balance.symbol}
         </span>
-        <button
-          onClick={handleRefreshBalance}
-          className="p-1 hover:bg-gray-100 rounded-full ml-10px"
-          title="Обновить баланс"
+        <a
+          href="https://faucet.moonbeam.network/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 hover:text-blue-800 underline text-sm ml-2"
         >
-          🔄
-        </button>
+          Получить тестовые токены
+        </a>
       </div>
     )
   );
