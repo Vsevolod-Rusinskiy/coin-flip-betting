@@ -23,16 +23,20 @@ export const HomePage: FC = () => {
 
   const handlePlaceBet = async (amount: string) => {
     try {
-      const choice = await getCoinFlipResult();
+      if (!window.ethereum) {
+        throw new Error("MetaMask не установлен")
+      }
+
+      const choice = await getCoinFlipResult()
       
-      await window.ethereum.request({ method: "eth_requestAccounts" });
-      const web3Provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await web3Provider.getSigner();
+      await window.ethereum.request({ method: "eth_requestAccounts" })
+      const web3Provider = new ethers.BrowserProvider(window.ethereum)
+      const signer = await web3Provider.getSigner()
       const contract = new ethers.Contract(
         CONTRACT_ADDRESS,
         CONTRACT_ABI,
         signer
-      );
+      )
 
       const betAmount = ethers.parseEther(amount);
       console.log("Размещаем ставку:", betAmount.toString(), "wei");
