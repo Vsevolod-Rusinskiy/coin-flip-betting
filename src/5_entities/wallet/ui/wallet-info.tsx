@@ -4,11 +4,9 @@ import { useEffect, useState, type FC } from "react";
 import { useAccount, useBalance, useChainId } from "wagmi";
 import { moonbaseAlpha } from "viem/chains";
 
-interface WalletInfoProps {
-  betResult: { choice: boolean; result: boolean } | null
-}
 
-export const WalletInfo: FC<WalletInfoProps> = ({ betResult }) => {
+
+export const WalletInfo: FC = () => {
   const { address, isConnected } = useAccount();
   const { data: balance, refetch, isLoading } = useBalance({ address });
   const chainId = useChainId();

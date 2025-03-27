@@ -1,7 +1,6 @@
 "use client";
 
 import { type FC, useState } from "react";
-import { type HomePageProps } from "../model/types";
 import {
   ConnectButton,
   NetworkWarning,
@@ -12,7 +11,7 @@ import BetForm from "@features/make-bet/ui/bet-form";
 import { ethers } from "ethers";
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from "@/app/config/contract-config";
 
-export const HomePage: FC<HomePageProps> = () => {
+export const HomePage: FC = () => {
   const { isConnected, isCorrectNetwork } = useWalletStatus();
   const canPlay = isConnected && isCorrectNetwork;
   const [betResult, setBetResult] = useState<{
@@ -142,7 +141,7 @@ export const HomePage: FC<HomePageProps> = () => {
 
         {canPlay ? (
           <>
-            <WalletInfo betResult={betResult} />
+            <WalletInfo />
             {typeof chrome !== "undefined" && chrome.runtime ? (
               <>
                 {betResult && (
