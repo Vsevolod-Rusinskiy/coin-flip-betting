@@ -10,69 +10,82 @@ interface WalletInfoProps {
 
 export const WalletInfo: FC<WalletInfoProps> = ({ betResult }) => {
   const { address, isConnected } = useAccount();
-  const { data: balance, refetch } = useBalance({
-    address,
-  });
+  const { data: balance, refetch } = useBalance({ address });
   const chainId = useChainId();
 
-  const [balanceShow, setBalanceShow] = useState(parseFloat(balance?.formatted || "0").toFixed(4));
+  const [balanceShow, setBalanceShow] = useState("0.0000");
 
-  const handleRefreshBalance = async () => {
+  const updateBalance = async () => {
     await refetch();
+    if (balance?.formatted) {
+      setBalanceShow(parseFloat(balance.formatted).toFixed(4));
+    }
   };
 
+  const handleRefreshBalance = () => updateBalance();
 
   useEffect(() => {
-    if (betResult !== null) {
-      refetch();
-      setBalanceShow(parseFloat(balance?.formatted || "0").toFixed(4));
+    if (betResult !== null || balance?.formatted) {
+      updateBalance();
     }
-  }, [betResult, refetch, balance]);
+  }, [betResult, balance?.formatted]);
 
-  const isCorrectNetwork = chainId === moonbaseAlpha.id;
-  const networkName = isCorrectNetwork
-    ? moonbaseAlpha.name
-    : "Неизвестная сеть";
+  const networkStatus = {
+    isCorrectNetwork: chainId === moonbaseAlpha.id,
+    name: chainId === moonbaseAlpha.id ? moonbaseAlpha.name : "Неизвестная сеть"
+  };
 
-  if (!isConnected || !address) {
-    return null;
-  }
+  if (!isConnected || !address) return null;
+
+  const AddressSection = () => (
+    <div>
+      <span className="font-medium">Адрес: </span>
+      <span className="font-mono text-sm break-all">{address}</span>
+    </div>
+  );
+
+  const BalanceSection = () => (
+    balance && (
+      <div className="flex items-center gap-2">
+        <span className="font-medium">Баланс: </span>
+        <span>
+          {balanceShow} {balance.symbol}
+        </span>
+        <button
+          onClick={handleRefreshBalance}
+          className="p-1 hover:bg-gray-100 rounded-full ml-10px"
+          title="Обновить баланс"
+        >
+          🔄
+        </button>
+      </div>
+    )
+  );
+
+  const NetworkSection = () => (
+    <div>
+      <span className="font-medium">Сеть: </span>
+      <span className={networkStatus.isCorrectNetwork ? "text-green-600" : "text-red-600"}>
+        {networkStatus.name} {networkStatus.isCorrectNetwork ? "✓" : "✗"}
+      </span>
+    </div>
+  );
+
+  const ChainIdSection = () => (
+    <div>
+      <span className="font-medium">Chain ID: </span>
+      <span className="font-mono">{chainId}</span>
+    </div>
+  );
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md mb-6 text-gray-800">
-      <h2 className="text-xl font-semibold mb-4 ">Информация о кошельке</h2>
+      <h2 className="text-xl font-semibold mb-4">Информация о кошельке</h2>
       <div className="space-y-2">
-        <div>
-          <span className="font-medium">Адрес: </span>
-          <span className="font-mono text-sm break-all">{address}</span>
-        </div>
-        {balance && (
-          <div className="flex items-center gap-2">
-            <span className="font-medium">Баланс: </span>
-            <span>
-              {balanceShow} {balance.symbol}
-            </span>
-            <button
-              onClick={handleRefreshBalance}
-              className="p-1 hover:bg-gray-100 rounded-full ml-10px"
-              title="Обновить баланс"
-            >
-              🔄
-            </button>
-          </div>
-        )}
-        <div>
-          <span className="font-medium">Сеть: </span>
-          <span
-            className={isCorrectNetwork ? "text-green-600" : "text-red-600"}
-          >
-            {networkName} {isCorrectNetwork ? "✓" : "✗"}
-          </span>
-        </div>
-        <div>
-          <span className="font-medium">Chain ID: </span>
-          <span className="font-mono">{chainId}</span>
-        </div>
+        <AddressSection />
+        <BalanceSection />
+        <NetworkSection />
+        <ChainIdSection />
       </div>
     </div>
   );
