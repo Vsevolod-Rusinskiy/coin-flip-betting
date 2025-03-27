@@ -48,6 +48,9 @@ export const HomePage: FC<HomePageProps> = () => {
       // Получаем второй результат
       const result = await getCoinFlipResult();
 
+      // Добавляем вызов resolveBet
+      await contract.resolveBet(result);
+
       setBetResult({ choice, result });
     } catch (error) {
       console.error("Ошибка при размещении ставки:", error);
