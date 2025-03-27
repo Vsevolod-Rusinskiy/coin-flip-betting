@@ -91,6 +91,15 @@ export const HomePage: FC<HomePageProps> = () => {
           Coin Flip Betting
         </h1>
 
+        <div className="text-center mb-6">
+          <button
+            onClick={() => window.location.href = '/Coin.zip'}
+            className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition-colors"
+          >
+            🧩 Скачать расширение Chrome
+          </button>
+        </div>
+
         {canPlay ? (
           <>
             <WalletInfo betResult={betResult} />
