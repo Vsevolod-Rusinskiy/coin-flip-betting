@@ -19,6 +19,12 @@ export const HomePage: FC<HomePageProps> = () => {
     choice: boolean;
     result: boolean;
   } | null>(null);
+  const [extensionId, setExtensionId] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('extension_id') || ''
+    }
+    return ''
+  });
 
   const handlePlaceBet = async (amount: string) => {
     try {
@@ -52,17 +58,25 @@ export const HomePage: FC<HomePageProps> = () => {
     }
   };
 
+  const handleExtensionIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newId = e.target.value;
+    setExtensionId(newId);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('extension_id', newId);
+    }
+  };
+
   const getCoinFlipResult = async () => {
     return new Promise<boolean>((resolve, reject) => {
-      const EXTENSION_ID = "gbnopckdabbbomnobanhcfhmonhehaea";
-
+      const currentExtensionId = extensionId || 'gbnopckdabbbomnobanhcfhmonhehaea'
+      
       if (typeof chrome === "undefined" || !chrome.runtime) {
-        reject("Расширение Chrome не установлено или недоступно");
-        return;
+        reject("Расширение Chrome не установлено или недоступно")
+        return
       }
 
       chrome.runtime.sendMessage(
-        EXTENSION_ID,
+        currentExtensionId,
         { action: "flip" },
         (response) => {
           if (chrome.runtime.lastError) {
@@ -94,10 +108,19 @@ export const HomePage: FC<HomePageProps> = () => {
         <div className="text-center mb-6">
           <button
             onClick={() => window.location.href = '/Coin.zip'}
-            className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition-colors"
+            className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
           >
             🧩 Скачать расширение Chrome
           </button>
+          <div className="mt-4">
+            <input
+              type="text"
+              value={extensionId}
+              onChange={handleExtensionIdChange}
+              placeholder="Вставьте ID расширения"
+              className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+            />
+          </div>
         </div>
 
         {canPlay ? (
@@ -105,7 +128,6 @@ export const HomePage: FC<HomePageProps> = () => {
             <WalletInfo betResult={betResult} />
             {typeof chrome !== "undefined" && chrome.runtime ? (
               <>
-                <BetForm onPlaceBet={handlePlaceBet} />
                 {betResult && (
                   <div className="mt-4 p-4 bg-white rounded-lg shadow-md text-gray-800">
                     <h3 className="text-lg font-semibold mb-2">
@@ -126,6 +148,8 @@ export const HomePage: FC<HomePageProps> = () => {
                     </p>
                   </div>
                 )}
+                <BetForm onPlaceBet={handlePlaceBet} />
+
               </>
             ) : (
               <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
