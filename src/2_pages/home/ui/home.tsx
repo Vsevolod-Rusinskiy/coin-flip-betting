@@ -92,7 +92,7 @@ export const HomePage: FC<HomePageProps> = () => {
 
   return (
     <main className="min-h-screen p-4">
-      <div className="container mx-auto">
+      <div className="container mx-auto max-w-2xl">
         <div className="flex justify-end mb-4">
           <ConnectButton />
         </div>
