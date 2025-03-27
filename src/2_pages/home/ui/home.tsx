@@ -19,12 +19,8 @@ export const HomePage: FC<HomePageProps> = () => {
     choice: boolean;
     result: boolean;
   } | null>(null);
-  const [extensionId, setExtensionId] = useState<string>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('extension_id') || ''
-    }
-    return ''
-  });
+  const [extensionId, setExtensionId] = useState<string>('')
+  const [extensionIdError, setExtensionIdError] = useState<string>('')
 
   const handlePlaceBet = async (amount: string) => {
     try {
@@ -59,17 +55,33 @@ export const HomePage: FC<HomePageProps> = () => {
   };
 
   const handleExtensionIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newId = e.target.value;
-    setExtensionId(newId);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('extension_id', newId);
+    const newId = e.target.value
+    // Проверяем формат ID расширения Chrome
+    const isValidExtensionId = /^[a-z]{32}$/.test(newId) || newId === ''
+    
+    if (!isValidExtensionId && newId !== '') {
+      setExtensionIdError('ID расширения должен состоять из 32 символов в нижнем регистре')
+    } else {
+      setExtensionIdError('')
     }
-  };
+    
+    setExtensionId(newId)
+    if (typeof window !== 'undefined' && isValidExtensionId) {
+      localStorage.setItem('extension_id', newId)
+    }
+  }
 
   const getCoinFlipResult = async () => {
     return new Promise<boolean>((resolve, reject) => {
       const currentExtensionId = extensionId || 'gbnopckdabbbomnobanhcfhmonhehaea'
       
+      // Проверяем формат ID перед отправкой
+      if (!/^[a-z]{32}$/.test(currentExtensionId)) {
+        setExtensionIdError('Неверный формат ID расширения')
+        reject(new Error('Неверный формат ID расширения'))
+        return
+      }
+
       if (typeof chrome === "undefined" || !chrome.runtime) {
         reject("Расширение Chrome не установлено или недоступно")
         return
@@ -80,19 +92,22 @@ export const HomePage: FC<HomePageProps> = () => {
         { action: "flip" },
         (response) => {
           if (chrome.runtime.lastError) {
-            reject(chrome.runtime.lastError);
-            return;
+            setExtensionIdError('Неверный ID расширения')
+            reject(chrome.runtime.lastError)
+            return
           }
 
           if (response && response.success) {
-            resolve(response.result);
+            setExtensionIdError('')
+            resolve(response.result)
           } else {
-            reject("Не удалось получить результат от расширения");
+            setExtensionIdError('Не удалось получить результат от расширения')
+            reject("Не удалось получить результат от расширения")
           }
         }
-      );
-    });
-  };
+      )
+    })
+  }
 
   return (
     <main className="min-h-screen p-4">
@@ -120,6 +135,11 @@ export const HomePage: FC<HomePageProps> = () => {
               placeholder="Вставьте ID расширения"
               className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
             />
+            {extensionIdError && (
+              <p className="text-red-500 text-sm mt-1">
+                {extensionIdError}
+              </p>
+            )}
           </div>
         </div>
 
@@ -172,3 +192,4 @@ export const HomePage: FC<HomePageProps> = () => {
     </main>
   );
 };
+
