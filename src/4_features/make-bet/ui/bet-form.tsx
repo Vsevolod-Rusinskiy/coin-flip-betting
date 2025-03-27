@@ -8,8 +8,6 @@ const BetForm: React.FC<BetFormProps> = ({ onPlaceBet }) => {
   const [amount, setAmount] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const betAmount = parseFloat(amount);
@@ -51,7 +49,7 @@ const BetForm: React.FC<BetFormProps> = ({ onPlaceBet }) => {
         }`}
         disabled={isLoading}
       >
-        {isLoading ? "Подтверждение ставки..." : "Сделать ставку"}
+        {isLoading ? "Подбрасываем монетку..." : "Сделать ставку"}
       </button>
     </form>
   );

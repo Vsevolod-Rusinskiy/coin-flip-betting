@@ -20,13 +20,10 @@ export const HomePage: FC<HomePageProps> = () => {
     result: boolean;
   } | null>(null);
 
-
   const handlePlaceBet = async (amount: string) => {
     try {
-      // Получаем первый результат для выбора игрока
       const choice = await getCoinFlipResult();
-      console.log("Первый бросок (choice):", choice ? "Орёл" : "Решка");
-
+      
       // Используем wagmi для работы с контрактом
       await window.ethereum.request({ method: "eth_requestAccounts" });
       const web3Provider = new ethers.BrowserProvider(window.ethereum);
@@ -48,14 +45,7 @@ export const HomePage: FC<HomePageProps> = () => {
 
       // Получаем второй результат
       const result = await getCoinFlipResult();
-      console.log("Второй бросок (result):", result ? "Орёл" : "Решка");
-
-      // Разрешаем ставку в контракте
-      const resolveTx = await contract.resolveBet(result);
-      await resolveTx.wait();
-      console.log("Ставка разрешена");
-
-      // Показываем результат
+      
       setBetResult({ choice, result });
     } catch (error) {
       console.error("Ошибка при размещении ставки:", error);
@@ -106,7 +96,7 @@ export const HomePage: FC<HomePageProps> = () => {
             <WalletInfo betResult={betResult}/>
             {typeof chrome !== "undefined" && chrome.runtime ? (
               <>
-                <BetForm onPlaceBet={handlePlaceBet} />
+                <BetForm onPlaceBet={handlePlaceBet}/>
                 {betResult && (
                   <div className="mt-4 p-4 bg-white rounded-lg shadow-md text-gray-800">
                     <h3 className="text-lg font-semibold mb-2">
