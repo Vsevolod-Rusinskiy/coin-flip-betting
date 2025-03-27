@@ -20,6 +20,7 @@ export const HomePage: FC<HomePageProps> = () => {
     result: boolean;
   } | null>(null);
 
+
   const handlePlaceBet = async (amount: string) => {
     try {
       // Получаем первый результат для выбора игрока
@@ -102,7 +103,7 @@ export const HomePage: FC<HomePageProps> = () => {
 
         {canPlay ? (
           <>
-            <WalletInfo />
+            <WalletInfo betResult={betResult}/>
             {typeof chrome !== "undefined" && chrome.runtime ? (
               <>
                 <BetForm onPlaceBet={handlePlaceBet} />

@@ -1,19 +1,33 @@
 "use client";
 
-import { type FC } from "react";
+import { useEffect, useState, type FC } from "react";
 import { useAccount, useBalance, useChainId } from "wagmi";
 import { moonbaseAlpha } from "viem/chains";
 
-export const WalletInfo: FC = () => {
+interface WalletInfoProps {
+  betResult: { choice: boolean; result: boolean } | null
+}
+
+export const WalletInfo: FC<WalletInfoProps> = ({ betResult }) => {
   const { address, isConnected } = useAccount();
   const { data: balance, refetch } = useBalance({
     address,
   });
   const chainId = useChainId();
 
+  const [balanceShow, setBalanceShow] = useState(parseFloat(balance?.formatted || "0").toFixed(4));
+
   const handleRefreshBalance = async () => {
     await refetch();
   };
+
+
+  useEffect(() => {
+    if (betResult !== null) {
+      refetch();
+      setBalanceShow(parseFloat(balance?.formatted || "0").toFixed(4));
+    }
+  }, [betResult, refetch, balance]);
 
   const isCorrectNetwork = chainId === moonbaseAlpha.id;
   const networkName = isCorrectNetwork
@@ -36,7 +50,7 @@ export const WalletInfo: FC = () => {
           <div className="flex items-center gap-2">
             <span className="font-medium">Баланс: </span>
             <span>
-              {parseFloat(balance.formatted).toFixed(4)} {balance.symbol}
+              {balanceShow} {balance.symbol}
             </span>
             <button
               onClick={handleRefreshBalance}
