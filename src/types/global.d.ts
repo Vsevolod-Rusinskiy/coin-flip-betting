@@ -1,23 +1,37 @@
+interface EthereumRequest {
+  method: string
+  params?: unknown[]
+}
+
+interface EthereumProvider {
+  request: (args: EthereumRequest) => Promise<unknown>
+  on: (eventName: string, handler: (params: unknown) => void) => void
+  removeListener: (eventName: string, handler: (params: unknown) => void) => void
+  isMetaMask?: boolean
+}
+
 interface Window {
-  ethereum?: {
-    request: (args: { method: string; params?: any[] }) => Promise<any>
-    on: (eventName: string, handler: (...args: any[]) => void) => void
-    removeListener: (eventName: string, handler: (...args: any[]) => void) => void
-    isMetaMask?: boolean
+  ethereum?: EthereumProvider
+}
+
+interface ChromeMessage {
+  action: string
+  [key: string]: unknown
+}
+
+interface ChromeRuntime {
+  sendMessage: (
+    extensionId: string,
+    message: ChromeMessage,
+    callback: (response: { success: boolean; result: boolean }) => void
+  ) => void
+  lastError?: {
+    message?: string
   }
 }
 
 interface Chrome {
-  runtime?: {
-    sendMessage: (
-      extensionId: string,
-      message: any,
-      callback: (response: any) => void
-    ) => void
-    lastError?: {
-      message?: string
-    }
-  }
+  runtime?: ChromeRuntime
 }
 
-declare var chrome: Chrome 
+declare const chrome: Chrome 

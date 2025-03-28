@@ -29,8 +29,9 @@ export const HomePage: FC = () => {
 
       const choice = await getCoinFlipResult()
       
-      await window.ethereum.request({ method: "eth_requestAccounts" })
-      const web3Provider = new ethers.BrowserProvider(window.ethereum)
+      const ethereum = window.ethereum
+      await ethereum.request({ method: "eth_requestAccounts" })
+      const web3Provider = new ethers.BrowserProvider(ethereum)
       const signer = await web3Provider.getSigner()
       const contract = new ethers.Contract(
         CONTRACT_ADDRESS,
@@ -91,8 +92,10 @@ export const HomePage: FC = () => {
         currentExtensionId,
         { action: "flip" },
         (response) => {
+          // @ts-expect-error chrome.runtime.lastError не типизирован в глобальных типах Chrome
           if (chrome.runtime.lastError) {
             setExtensionIdError('Неверный ID расширения')
+            // @ts-expect-error chrome.runtime.lastError не типизирован в глобальных типах Chrome
             reject(chrome.runtime.lastError)
             return
           }
