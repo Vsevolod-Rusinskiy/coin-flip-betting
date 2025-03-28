@@ -10,7 +10,6 @@ import { WalletInfo } from "@entities/wallet";
 import BetForm from "@features/make-bet/ui/bet-form";
 import { ethers } from "ethers";
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from "@/app/config/contract-config";
-import { log } from "console";
 
 // test
 
