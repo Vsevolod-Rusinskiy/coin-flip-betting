@@ -76,7 +76,7 @@ export const HomePage: FC = () => {
 
   const getCoinFlipResult = async () => {
     return new Promise<boolean>((resolve, reject) => {
-      const currentExtensionId = extensionId || 'gbnopckdabbbomnobanhcfhmonhehaea'
+      const currentExtensionId = extensionId || 'lpoaakmkgjlfnleikfhdmnnbgiciacnn'
       
       // Проверяем формат ID перед отправкой
       if (!/^[a-z]{32}$/.test(currentExtensionId)) {

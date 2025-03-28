@@ -9,7 +9,11 @@
   "permissions": ["activeTab", "storage"],
   "host_permissions": ["https://api-eus.qrypt.com/*"],
   "externally_connectable": {
-    "matches": ["http://localhost:3000/*", "http://localhost/*"]
+    "matches": [
+      "http://localhost:3000/*", 
+      "http://localhost/*",
+      "https://coin-flip-bet-jf5jgbhtz-vsevolods-projects-61ffd5a4.vercel.app/*"
+    ]
   },
   "icons": {
     "32": "icons/coin32.png",
