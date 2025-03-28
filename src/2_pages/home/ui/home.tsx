@@ -11,6 +11,8 @@ import BetForm from "@features/make-bet/ui/bet-form";
 import { ethers } from "ethers";
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from "@/app/config/contract-config";
 
+// test
+
 export const HomePage: FC = () => {
   const { isConnected, isCorrectNetwork } = useWalletStatus();
   const canPlay = isConnected && isCorrectNetwork;
