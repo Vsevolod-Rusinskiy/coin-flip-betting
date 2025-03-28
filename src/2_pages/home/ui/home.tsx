@@ -10,6 +10,7 @@ import { WalletInfo } from "@entities/wallet";
 import BetForm from "@features/make-bet/ui/bet-form";
 import { ethers } from "ethers";
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from "@/app/config/contract-config";
+import { log } from "console";
 
 // test
 
@@ -80,7 +81,10 @@ export const HomePage: FC = () => {
 
   const getCoinFlipResult = async () => {
     return new Promise<boolean>((resolve, reject) => {
-      const currentExtensionId = extensionId || 'lpoaakmkgjlfnleikfhdmnnbgiciacnn'
+      // const currentExtensionId = extensionId || 'lpoaakmkgjlfnleikfhdmnnbgiciacnn'
+      const currentExtensionId = extensionId 
+
+      
       
       // Проверяем формат ID перед отправкой
       if (!/^[a-z]{32}$/.test(currentExtensionId)) {
