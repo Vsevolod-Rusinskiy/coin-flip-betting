@@ -1,6 +1,6 @@
 "use client";
 
-import { type FC, useState } from "react";
+import { type FC, useState, useEffect } from "react";
 import {
   ConnectButton,
   NetworkWarning,
@@ -22,6 +22,10 @@ export const HomePage: FC = () => {
   } | null>(null);
   const [extensionId, setExtensionId] = useState<string>('')
   const [extensionIdError, setExtensionIdError] = useState<string>('')
+
+  useEffect(() => {
+    console.log('Текущий APP_URL:', process.env.NEXT_PUBLIC_APP_URL)
+  }, [])
 
   const handlePlaceBet = async (amount: string) => {
     try {
@@ -117,6 +121,11 @@ export const HomePage: FC = () => {
   return (
     <main className="min-h-screen p-4">
       <div className="container mx-auto max-w-2xl">
+        {process.env.NODE_ENV === 'development' && (
+          <div className="text-sm text-gray-500 mb-2">
+            🔧 Development Mode: {process.env.NEXT_PUBLIC_APP_URL}
+          </div>
+        )}
         <div className="flex justify-end mb-4">
           <ConnectButton />
         </div>
@@ -137,7 +146,7 @@ export const HomePage: FC = () => {
               type="text"
               value={extensionId}
               onChange={handleExtensionIdChange}
-              placeholder="Вставьте ID расширения"
+              placeholder="Вставьте ID расширения."
               className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
             />
             {extensionIdError && (

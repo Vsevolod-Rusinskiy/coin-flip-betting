@@ -1,5 +1,5 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 4,
   "name": "Coin Flip",
   "version": "1.0",
   "description": "Простое расширение для подбрасывания монетки",
@@ -12,7 +12,7 @@
     "matches": [
       "http://localhost:3000/*", 
       "http://localhost/*",
-      "https://coin-flip-bet-jf5jgbhtz-vsevolods-projects-61ffd5a4.vercel.app/*"
+      "https://*.vercel.app/*"
     ]
   },
   "icons": {
