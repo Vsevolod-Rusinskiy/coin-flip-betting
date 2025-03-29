@@ -1,6 +1,6 @@
 "use client";
 
-import { type FC, useState, useEffect } from "react";
+import { type FC, useState, useEffect, useCallback } from "react";
 import {
   ConnectButton,
   NetworkWarning,
@@ -22,6 +22,7 @@ export const HomePage: FC = () => {
   } | null>(null);
   const [extensionId, setExtensionId] = useState<string>('')
   const [extensionIdError, setExtensionIdError] = useState<string>('')
+  const [extensionStatus, setExtensionStatus] = useState<string>('checking')
 
   useEffect(() => {
     console.log('Текущий APP_URL:', process.env.NEXT_PUBLIC_APP_URL)
@@ -29,14 +30,16 @@ export const HomePage: FC = () => {
 
   const handlePlaceBet = async (amount: string) => {
     try {
-      if (!window.ethereum) {
+      const ethereum = window.ethereum
+      if (!ethereum) {
         throw new Error("MetaMask не установлен")
       }
 
       const choice = await getCoinFlipResult()
       
-      const ethereum = window.ethereum
+      // @ts-expect-error - ethereum.request имеет тип unknown
       await ethereum.request({ method: "eth_requestAccounts" })
+      // @ts-expect-error - ethers не понимает тип window.ethereum
       const web3Provider = new ethers.BrowserProvider(ethereum)
       const signer = await web3Provider.getSigner()
       const contract = new ethers.Contract(
@@ -101,14 +104,6 @@ export const HomePage: FC = () => {
         currentExtensionId,
         { action: "flip" },
         (response) => {
-          // @ts-expect-error chrome.runtime.lastError не типизирован в глобальных типах Chrome
-          if (chrome.runtime.lastError) {
-            setExtensionIdError('Неверный ID расширения')
-            // @ts-expect-error chrome.runtime.lastError не типизирован в глобальных типах Chrome
-            reject(chrome.runtime.lastError)
-            return
-          }
-
           if (response && response.success) {
             setExtensionIdError('')
             resolve(response.result)
@@ -121,12 +116,79 @@ export const HomePage: FC = () => {
     })
   }
 
+  const checkExtension = useCallback(async () => {
+    console.log('🔍 Режим:', process.env.NODE_ENV)
+    console.log('🔍 URL приложения:', window.location.href)
+    
+    try {
+      // Проверяем только runtime
+      const hasRuntime = typeof chrome !== 'undefined' && chrome?.runtime
+      console.log('Проверка Chrome Runtime:', hasRuntime)
+
+      if (!hasRuntime) {
+        console.log('❌ Chrome Runtime недоступен')
+        setExtensionStatus('not_installed')
+        return false
+      }
+
+      // Пробуем отправить тестовое сообщение
+      const testConnection = () => {
+        return new Promise<boolean>((resolve) => {
+          if (!chrome?.runtime) {
+            console.log('❌ Chrome Runtime недоступен')
+            resolve(false)
+            return
+          }
+
+          const runtime = chrome.runtime
+          
+          runtime.sendMessage(
+            extensionId,
+            { action: "test" },
+            (response) => {
+              if (runtime.lastError) {
+                console.log('❌ Ошибка соединения:', runtime.lastError)
+                resolve(false)
+                return
+              }
+              console.log('✅ Соединение успешно:', response)
+              resolve(true)
+            }
+          )
+        })
+      }
+
+      const isConnected = await testConnection()
+      if (isConnected) {
+        setExtensionStatus('found')
+        return true
+      }
+
+      console.log('❌ Не удалось подключиться к расширению')
+      setExtensionStatus('not_found')
+      return false
+      
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('❌ Ошибка:', error)
+      }
+      setExtensionStatus('error')
+      return false
+    }
+  }, [extensionId])
+
+  useEffect(() => {
+    console.log('🔄 Компонент смонтирован, запускаем проверку...')
+    checkExtension()
+  }, [checkExtension])
+
   return (
     <main className="min-h-screen p-4">
       <div className="container mx-auto max-w-2xl">
         {process.env.NODE_ENV === 'development' && (
-          <div className="text-sm text-gray-500 mb-2">
-            🔧 Development Mode: {process.env.NEXT_PUBLIC_APP_URL}
+          <div className="text-sm text-gray-500 mb-4">
+            <p>Status: {extensionStatus}</p>
+            <p>Extension ID: {extensionId || 'не установлен'}</p>
           </div>
         )}
         <div className="flex justify-end mb-4">
@@ -185,8 +247,34 @@ export const HomePage: FC = () => {
                     </p>
                   </div>
                 )}
-                <BetForm onPlaceBet={handlePlaceBet} />
+                {extensionStatus === 'checking' && (
+                  <div>Проверяем наличие расширения...</div>
+                )}
 
+                {extensionStatus === 'management_api_unavailable' && (
+                  <div>
+                    <p>Не удалось проверить расширение.</p>
+                    <p className="text-sm text-gray-600">
+                      Убедитесь, что расширение установлено и перезагрузите страницу
+                    </p>
+                  </div>
+                )}
+
+                {extensionStatus === 'not_found' && (
+                  <div>
+                    <p>Расширение не найдено</p>
+                    <button
+                      onClick={() => window.location.href = '/Coin.zip'}
+                      className="mt-2 bg-blue-500 text-white px-4 py-2 rounded"
+                    >
+                      Скачать расширение
+                    </button>
+                  </div>
+                )}
+
+                {extensionStatus === 'found' && (
+                  <BetForm onPlaceBet={handlePlaceBet} />
+                )}
               </>
             ) : (
               <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">

@@ -1,17 +1,8 @@
-interface EthereumRequest {
-  method: string
-  params?: unknown[]
-}
-
-interface EthereumProvider {
-  request: (args: EthereumRequest) => Promise<unknown>
-  on: (eventName: string, handler: (params: unknown) => void) => void
-  removeListener: (eventName: string, handler: (params: unknown) => void) => void
+export interface EthereumProvider {
+  request: (args: { method: string; params?: unknown[] }) => Promise<unknown>
+  on: (eventName: string, handler: (...args: unknown[]) => void) => void
+  removeListener: (eventName: string, handler: (...args: unknown[]) => void) => void
   isMetaMask?: boolean
-}
-
-interface Window {
-  ethereum?: EthereumProvider
 }
 
 interface ChromeMessage {
@@ -34,4 +25,13 @@ interface Chrome {
   runtime?: ChromeRuntime
 }
 
-declare const chrome: Chrome 
+declare global {
+  interface Window {
+    ethereum?: EthereumProvider
+    chrome?: Chrome
+  }
+  
+  const chrome: Chrome | undefined
+}
+
+export {} 

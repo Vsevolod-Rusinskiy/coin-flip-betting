@@ -1,17 +1,23 @@
 {
   "manifest_version": 3,
   "name": "Coin Flip",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Простое расширение для подбрасывания монетки",
   "action": {
     "default_popup": "popup.html"
   },
-  "permissions": ["activeTab", "storage"],
-  "host_permissions": ["https://api-eus.qrypt.com/*"],
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://api-eus.qrypt.com/*"
+  ],
   "externally_connectable": {
     "matches": [
-      "http://localhost:3000/*", 
+      "http://localhost:3000/*",
       "http://localhost/*",
+      "http://192.168.50.247:3000/*",
       "https://*.vercel.app/*"
     ]
   },
