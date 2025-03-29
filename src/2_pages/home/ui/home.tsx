@@ -121,33 +121,41 @@ export const HomePage: FC = () => {
     console.log('🔍 URL приложения:', window.location.href)
     
     try {
-      // Проверяем только runtime
-      const hasRuntime = typeof chrome !== 'undefined' && chrome?.runtime
-      console.log('Проверка Chrome Runtime:', hasRuntime)
+      // Проверяем runtime и sendMessage
+      const hasRuntime = typeof chrome !== 'undefined' && 
+                        chrome?.runtime && 
+                        typeof chrome.runtime.sendMessage === 'function'
+      
+      console.log('🔍 Chrome API:', {
+        runtime: !!chrome?.runtime,
+        sendMessage: typeof chrome?.runtime?.sendMessage === 'function',
+        extensionId: extensionId || 'не указан'
+      })
 
       if (!hasRuntime) {
-        console.log('❌ Chrome Runtime недоступен')
+        console.log('❌ Chrome Runtime или sendMessage недоступны')
         setExtensionStatus('not_installed')
+        return false
+      }
+
+      if (!extensionId) {
+        console.log('❌ ID расширения не указан')
+        setExtensionStatus('not_found')
         return false
       }
 
       // Пробуем отправить тестовое сообщение
       const testConnection = () => {
         return new Promise<boolean>((resolve) => {
-          if (!chrome?.runtime) {
-            console.log('❌ Chrome Runtime недоступен')
-            resolve(false)
-            return
-          }
-
-          const runtime = chrome.runtime
-          
-          runtime.sendMessage(
+          // @ts-expect-error - Chrome API types
+          chrome.runtime.sendMessage(
             extensionId,
             { action: "test" },
             (response) => {
-              if (runtime.lastError) {
-                console.log('❌ Ошибка соединения:', runtime.lastError)
+              // @ts-expect-error - Chrome types
+              if (chrome.runtime.lastError) {
+              // @ts-expect-error - Chrome types
+                console.log('❌ Ошибка соединения:', chrome.runtime.lastError)
                 resolve(false)
                 return
               }

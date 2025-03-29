@@ -36,7 +36,14 @@ chrome.runtime.onMessageExternal.addListener(function (
   sender,
   sendResponse
 ) {
-  console.log("🎲 1. Получен запрос на подбрасывание");
+  console.log("📨 Получено сообщение:", request.action);
+
+  // Добавляем обработку тестового сообщения
+  if (request.action === "test") {
+    console.log("✅ Тестовое соединение установлено");
+    sendResponse({ success: true });
+    return true;
+  }
 
   if (request.action === "flip") {
     // Делаем ОДНО подбрасывание
@@ -58,3 +65,8 @@ chrome.runtime.onMessageExternal.addListener(function (
 });
 
 console.log("=== COIN FLIP BACKGROUND SERVICE STARTED ===");
+
+chrome.runtime.onInstalled.addListener(() => {
+  console.log('Расширение установлено, ID:', chrome.runtime.id)
+  // Можно показать ID в popup.html
+})

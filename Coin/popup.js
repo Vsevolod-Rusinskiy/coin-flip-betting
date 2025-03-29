@@ -72,4 +72,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   button.addEventListener("click", flipCoin);
   console.log("Обработчик клика добавлен");
+
+  document.getElementById('extension-id').textContent = chrome.runtime.id;
 });
