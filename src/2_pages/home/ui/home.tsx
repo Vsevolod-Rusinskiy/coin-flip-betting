@@ -83,7 +83,6 @@ export const HomePage: FC = () => {
 
   const getCoinFlipResult = async () => {
     return new Promise<boolean>((resolve, reject) => {
-      // const currentExtensionId = extensionId || 'lpoaakmkgjlfnleikfhdmnnbgiciacnn'
       const currentExtensionId = extensionId 
 
       
@@ -219,7 +218,7 @@ export const HomePage: FC = () => {
               type="text"
               value={extensionId}
               onChange={handleExtensionIdChange}
-              placeholder="Вставьте ID расширения."
+              placeholder="Вставьте ID расширения..."
               className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
             />
             {extensionIdError && (
@@ -270,13 +269,7 @@ export const HomePage: FC = () => {
 
                 {extensionStatus === 'not_found' && (
                   <div>
-                    <p>Расширение не найдено</p>
-                    <button
-                      onClick={() => window.location.href = '/Coin.zip'}
-                      className="mt-2 bg-blue-500 text-white px-4 py-2 rounded"
-                    >
-                      Скачать расширение
-                    </button>
+                    <p>Расширение не найдено или не указан id</p>
                   </div>
                 )}
 
