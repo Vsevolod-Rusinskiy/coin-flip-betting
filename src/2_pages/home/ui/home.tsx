@@ -10,11 +10,14 @@ import { WalletInfo } from "@entities/wallet";
 import BetForm from "@features/make-bet/ui/bet-form";
 import { ethers } from "ethers";
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from "@/app/config/contract-config";
+import { useAccount, useWalletClient } from "wagmi";
 
 // test
 
 export const HomePage: FC = () => {
   const { isConnected, isCorrectNetwork } = useWalletStatus();
+  const { address } = useAccount();
+  const { data: walletClient } = useWalletClient();
   const canPlay = isConnected && isCorrectNetwork;
   const [betResult, setBetResult] = useState<{
     choice: boolean;
@@ -30,17 +33,14 @@ export const HomePage: FC = () => {
 
   const handlePlaceBet = async (amount: string) => {
     try {
-      const ethereum = window.ethereum
-      if (!ethereum) {
-        throw new Error("MetaMask не установлен")
+      if (!walletClient || !address) {
+        throw new Error("Кошелек не подключен")
       }
 
       const choice = await getCoinFlipResult()
       
-      // @ts-expect-error - ethereum.request имеет тип unknown
-      await ethereum.request({ method: "eth_requestAccounts" })
-      // @ts-expect-error - ethers не понимает тип window.ethereum
-      const web3Provider = new ethers.BrowserProvider(ethereum)
+      // Используем walletClient вместо window.ethereum
+      const web3Provider = new ethers.BrowserProvider(walletClient)
       const signer = await web3Provider.getSigner()
       const contract = new ethers.Contract(
         CONTRACT_ADDRESS,
